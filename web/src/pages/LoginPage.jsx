@@ -47,11 +47,6 @@ export default function LoginPage() {
         <button className="btn btn-primary" type="submit" disabled={loading}>
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
-
-        <p className="muted small">
-          Demo super admin: ks2.praveen@gmail.com / Admin@123 · Demo resident: 9000000001 /
-          User@123 (after running <code>npm run seed</code>)
-        </p>
       </form>
     </div>
   );

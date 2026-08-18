@@ -137,6 +137,8 @@ and Netlify redeploy automatically on every push.
    region to India).
 3. On the project dashboard, copy the **connection string** — it looks like:
    `postgresql://user:password@ep-xxxx.ap-southeast-1.aws.neon.tech/neondb?sslmode=require`
+    npx neonctl@latest init
+    postgresql://neondb_owner:npg_zobs4Ye7lmGI@ep-shiny-sound-b3sc5bvp.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
 4. Keep it handy — it goes into Render in the next step. Treat it like a password.
 
 ## Step 2 — Free backend on Render (~10 minutes)
@@ -152,7 +154,7 @@ and Netlify redeploy automatically on every push.
    - Instance Type: **Free**
 4. Environment variables (Add Environment Variable):
    - `DATABASE_URL` = the Neon connection string from Step 1
-   - `JWT_SECRET` = any long random string (40+ characters)
+   - `JWT_SECRET` = any long random string (40+ characters) - aec1b3b3663269213e899854c3ae788b
    - `DEFAULT_USER_PASSWORD` = `Welcome@123` (or your choice)
    - `SEED_IF_EMPTY` = `true` — the first boot loads the demo data (buildings, logins)
      automatically since the database starts empty. It never overwrites existing data, so

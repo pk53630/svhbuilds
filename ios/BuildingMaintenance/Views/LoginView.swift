@@ -35,9 +35,6 @@ struct LoginView: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(loading || email.isEmpty || password.isEmpty)
-
-            Text("Demo super admin: ks2.praveen@gmail.com / Admin@123")
-                .font(.caption2).foregroundColor(.secondary)
         }
         .padding(24)
         .frame(maxWidth: 380)

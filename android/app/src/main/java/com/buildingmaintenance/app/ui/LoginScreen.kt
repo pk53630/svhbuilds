@@ -42,11 +42,6 @@ fun LoginScreen(viewModel: AppViewModel, onLoggedIn: () -> Unit) {
             ) {
                 Text(if (loading) "Signing in…" else "Sign in")
             }
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Demo super admin: ks2.praveen@gmail.com / Admin@123",
-                style = MaterialTheme.typography.bodySmall
-            )
         }
     }
 }
