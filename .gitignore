@@ -1,0 +1,25 @@
+# Dependencies (reinstalled by npm install on the server)
+node_modules/
+
+# Local environment secrets — never commit these
+.env
+.env.production
+
+# Local database and logs (cloud uses Neon Postgres instead)
+backend/data/db.json
+backend/data/uploads/
+backend/data/notifications.log
+
+# Build output (rebuilt by Netlify)
+web/dist/
+
+# Android/iOS build junk
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+ios/build/
+
+# OS noise
+Thumbs.db
+.DS_Store

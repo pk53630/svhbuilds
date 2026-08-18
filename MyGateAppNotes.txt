@@ -1,0 +1,192 @@
+I want to create a web page application, android app google store and iphone app play store
+
+Below is the basic idea
+
+The application that I want to create building maintenance application, the users will raise request either in web page / app for the building problems / issues like plumbing, carpentary, electric, water issue, cleaning, internet not working, lift not working, back up power issue, like similar issues will raise request and the issues will notify to related concern person and admin with service ticket number with some basic information in with status to whatsapp and gmail
+
+The application app that has to be following features
+
+1. The app should be support on web application, google play store and iphone play store and same data should reflect in all 3
+2. For reference it can be reffered MyGate andriod app
+3. The main page should contain building names, as there can me 4 to 5 building names can be visible in main page or main screen
+4. There should be one super admin and normal admin and users
+5. The super admin can add or delete building names and normal admin
+6. The normal admin can add and delete users
+7. Once user will create or add on particular building name then he can raise request for the building with flat number as mentioned problems above by clicking drop down issues
+8. The user can see the list of drop down issue, and user can select one option and submit the button
+   Dropdown issue
+   1. Plumbing
+   2. Carpentary
+   3. Electricity
+   4. Water issue
+   5. Internet not working
+   6. Lift not working
+   7. Back up power issue
+   8. Cleaning
+   9. Access not working
+   10. Others
+9. For all drop down issues user can write description not more than 50 words
+10. Once the user will click on submit button then one service request number will create below is the examples of service request
+    Example of service request, for example 
+    1. building name is Lasaya Home the service request number will be LH12345
+    2. building name is SVL residency the service request number will be SVL12345
+11. The status should display building for admins and requested raise user
+12. The admin can close Service request based on issue feedback closure
+
+lets first change in web page application, once we are good with design and changes then we will work on play store apps
+There is change in step 11, "The status should display building for admins and requested raise user, same whatsapp message should send to normal admin".
+New step has add 11.1, Once user will create request then building admin can trigger whatsapp message to related technician
+for example 
+Plumbing - 918553227280
+Carpentary - 919035517844
+Electricity - 918105870377
+Water issue - 918105870377
+Internet not working - 918105870377
+Lift not working - 918105870377
+Back up power issue - 918105870377
+Cleaning - 918105870377
+Access not working - 918105870377
+Others - 918105870377
+
+As we setup on S3 for ananddental.co.in, could you please provide same setup for maintenance application
+name of the application is svhbuilds
+
+There is one change in step 9. "For all drop down issues user can write description not more than 50 words", the user can upload images also below is the updated step 9, "For all drop down issues user can write description not more than 50 words and upload images. Both description and upload images should be optional not mandatory"
+
+Building Names and its pictures
+SV RESIDENCY - SVresidency.jpg
+LAASYA HOMES - LasyaHomes.jpg
+TECH PRO - TechPro.jpg
+SRI SIRI RESIDENCY - SriSiri.jpg
+Urban Stays - UrbanStays.jpg
+
+There is update in login/user and added flat numbers
+
+There should be one user per flat, and flat login user should be its mobile number when building admin creates users the user name should be mobile number and password should be default for 1st time login, once user login then user needs to change password this is mandatory
+
+Building Names and its flat number
+SV RESIDENCY - 101,102,103,104,201,202,203,204,301,302,303,304,401,402,403,404,501,502,503,504,603
+LAASYA HOMES - 101,102,103,104,105,201,202,203,204,205,301,302,303,304,305,401,402,403,404,405,501,502,503,504,505,P-1,P-2
+TECH PRO - 101,102,103,104,105,106,201,202,203,204,205,206,301,302,303,304,305,306,401,402,403,404,405,406,501,502,503,504,505,506,P-1,P-2,G-1,S-1
+SRI SIRI RESIDENCY - 101,102,103,104,105,106,201,202,203,204,205,206,301,302,303,304,305,306,401,402,403,404,405,406,501,502,503,504,505,506,P-1,P-2,G-1,S-1
+Urban Stays - 101,102,103,104,105,106,201,202,203,204,205,206,301,302,303,304,305,306,401,402,403,404,405,406,501,502,503,504,505,506,P-1,P-2,G-1,S-1
+
+There is change in plan, as of now I want to go every thing free setup just like as we did for "FIFA round 32 knockout matches and schedule". Once our functionality looks good and we will present to client these functionalities then we will think paid services
+
+
+
+# 100% free hosting for svhbuilds (demo / client-presentation phase)
+
+Everything below is free, needs no credit card, and gives you public URLs you can send to the
+client. When they're happy, the paid AWS setup (`deploy/AWS_FULL_SETUP_GUIDE.md`) is the
+upgrade path — no code changes needed, just different hosting.
+
+Three free services, one job each:
+
+| Piece | Service | Why |
+|---|---|---|
+| Database | **Neon** (free Postgres) | Free servers wipe their disk on restart — the database keeps users/tickets/photos safe |
+| Backend API | **Render** (free web service) | Runs the Node backend |
+| Web frontend | **Netlify** (free static hosting) | Serves the React app, like the FIFA page |
+
+One honest limitation of the free tier: Render puts the backend to sleep after ~15 minutes of
+no traffic, and the first visit after that takes ~50 seconds to wake up. Fine for demos — just
+open the site once yourself before presenting so it's already awake.
+
+---
+
+## Step 0 — Push the project to GitHub (one time)
+
+Render and Netlify both deploy straight from GitHub.
+
+1. Create a free account at https://github.com if you don't have one.
+2. Create a new **private** repository named `svhbuilds`.
+3. From `D:\Praveen\MyGateApp` in PowerShell (install Git from https://git-scm.com if needed):
+
+```powershell
+git init
+git add .
+git commit -m "svhbuilds initial version"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/svhbuilds.git
+git remote add origin https://github.com/pk53630/svhbuilds.git
+git push -u origin main
+```
+
+# 1. Tell git who you are (one time only, any name is fine)
+git config --global user.name "Praveen"
+git config --global user.email "pk53630@yahoo.com"
+
+# 2. Re-stage files so the new .gitignore takes effect
+git rm -r --cached . -q
+git add .
+
+# 3. Commit (this is the step that failed before)
+git commit -m "svhbuilds initial version"
+
+# 4. Push (remote is already set from your earlier commands)
+git push -u origin main
+
+After future changes: `git add . ; git commit -m "describe change" ; git push` — both Render
+and Netlify redeploy automatically on every push.
+
+## Step 1 — Free database on Neon (~5 minutes)
+
+1. Sign up at https://neon.tech (free plan, no card).
+2. Create a project: name `svhbuilds`, region **AWS Asia Pacific (Singapore)** (closest free
+   region to India).
+3. On the project dashboard, copy the **connection string** — it looks like:
+   `postgresql://user:password@ep-xxxx.ap-southeast-1.aws.neon.tech/neondb?sslmode=require`
+4. Keep it handy — it goes into Render in the next step. Treat it like a password.
+
+## Step 2 — Free backend on Render (~10 minutes)
+
+1. Sign up at https://render.com with your GitHub account (free, no card).
+2. **New → Web Service** → connect the `svhbuilds` repo.
+3. Settings:
+   - Name: `svhbuilds-api`
+   - Region: **Singapore**
+   - Root Directory: `backend`
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Instance Type: **Free**
+4. Environment variables (Add Environment Variable):
+   - `DATABASE_URL` = the Neon connection string from Step 1
+   - `JWT_SECRET` = any long random string (40+ characters)
+   - `DEFAULT_USER_PASSWORD` = `Welcome@123` (or your choice)
+   - `SEED_IF_EMPTY` = `true` — the first boot loads the demo data (buildings, logins)
+     automatically since the database starts empty. It never overwrites existing data, so
+     it's safe to leave on.
+5. Create Web Service and wait for the first deploy (a few minutes).
+6. Note your API URL, e.g. `https://svhbuilds-api.onrender.com` and check
+   `https://svhbuilds-api.onrender.com/api/health` shows `{"ok":true}`.
+
+## Step 3 — Free frontend on Netlify (~5 minutes)
+
+1. Sign up at https://netlify.com with GitHub (free, no card).
+2. **Add new site → Import an existing project** → pick the `svhbuilds` repo.
+3. Settings:
+   - Base directory: `web`
+   - Build command: `npm run build`
+   - Publish directory: `web/dist`
+   - Environment variable: `VITE_API_URL` = `https://svhbuilds-api.onrender.com/api`
+     (your URL from Step 2)
+4. Deploy. Netlify gives you a URL like `https://svhbuilds.netlify.app` (you can pick the
+   subdomain under Site settings → Change site name).
+5. One extra file is already in the repo for this: `web/public/_redirects` — it makes page
+   refreshes work on Netlify for a single-page app.
+
+## Step 4 — Try it
+
+Open your Netlify URL and log in:
+- Super admin: `ks2.praveen@gmail.com` / `Admin@123`
+- Demo resident: `9000000001` / `User@123`
+
+This is the link you send to the client. Data lives in Neon, so it survives restarts, sleeps,
+and redeploys.
+
+## When you upgrade to paid later
+
+- The same code runs on AWS (the earlier guide) — set the same three environment variables.
+- Or simply pay Render $7/month for the always-on instance and keep everything else identical.
+- The Android/iOS apps just need this same API URL when you're ready for the store phase.
