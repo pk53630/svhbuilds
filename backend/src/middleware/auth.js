@@ -31,4 +31,20 @@ function authorize(...roles) {
   };
 }
 
-module.exports = { authenticate, authorize, JWT_SECRET };
+/** The list of building IDs an admin manages (supports one admin over many buildings). */
+function adminBuildingIds(user) {
+  if (!user) return [];
+  if (Array.isArray(user.buildingIds) && user.buildingIds.length) return user.buildingIds;
+  return user.buildingId ? [user.buildingId] : [];
+}
+
+/** True if the user may act on the given building. Super admin can access all. */
+function hasBuildingAccess(user, buildingId) {
+  if (!user || !buildingId) return false;
+  if (user.role === 'super_admin') return true;
+  if (user.role === 'admin') return adminBuildingIds(user).includes(buildingId);
+  if (user.role === 'user') return user.buildingId === buildingId;
+  return false;
+}
+
+module.exports = { authenticate, authorize, JWT_SECRET, adminBuildingIds, hasBuildingAccess };

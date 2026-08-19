@@ -8,6 +8,7 @@
 | code    | string | short code used in ticket numbers, e.g. "SV" |
 | address | string | optional                               |
 | image   | string | optional photo filename in the project's `Images` folder, served at `/images/<filename>` |
+| imageData | string | optional uploaded photo stored inline (base64 data URL) — used when the super admin uploads a picture from the browser; survives on cloud hosting |
 
 Current buildings (seeded): SV RESIDENCY (SV, SVresidency.jpg), LAASYA HOMES (LH, LasyaHomes.jpg),
 TECH PRO (TP, TechPro.jpg), SRI SIRI RESIDENCY (SSR, SriSiri.jpg), Urban Stays (US, UrbanStays.jpg).
@@ -20,7 +21,8 @@ TECH PRO (TP, TechPro.jpg), SRI SIRI RESIDENCY (SSR, SriSiri.jpg), Urban Stays (
 | email        | string | admins/super admin log in with this; optional for residents |
 | phone        | string | **residents log in with this** (their username IS their mobile number); also used for WhatsApp |
 | role         | enum   | `super_admin` \| `admin` \| `user`                    |
-| buildingId   | string | null for super admin; required for admin/user         |
+| buildingIds  | array  | for admins: every building they manage (one admin can manage several) |
+| buildingId   | string | residents: their building. Admins: kept as `buildingIds[0]` for display/back-compat. Null for super admin |
 | flatNumber   | string | only set for role `user`; **one user per flat**, must be in the building's flat list |
 | passwordHash | string | bcrypt hash, never returned by the API                |
 | mustChangePassword | bool | true for admin-created residents until they set their own password on first login |

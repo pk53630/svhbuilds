@@ -16,7 +16,8 @@ export default function BuildingDetailPage() {
 
   if (!building) return <div className="page">Loading…</div>;
 
-  const isAdminHere = user.role === 'admin' && user.buildingId === buildingId;
+  const adminIds = user.buildingIds || (user.buildingId ? [user.buildingId] : []);
+  const isAdminHere = user.role === 'admin' && adminIds.includes(buildingId);
   const isUserHere = user.role === 'user' && user.buildingId === buildingId;
   const isSuperAdmin = user.role === 'super_admin';
 

@@ -21,15 +21,17 @@ Returns: `{ success, user }` with `mustChangePassword` cleared.
 | Method | Path | Role | Description |
 |---|---|---|---|
 | GET | `/buildings` | any | List all buildings |
-| POST | `/buildings` | super_admin | Body `{ name, code, address }` |
-| DELETE | `/buildings/:id` | super_admin | Also removes that building's users/tickets |
+| POST | `/buildings` | super_admin | Body `{ name, code, address?, flats?, image?, imageData? }` — `imageData` is an uploaded photo as a base64 data URL (≤3 MB) |
+| PATCH | `/buildings/:id` | super_admin | Update name/address/flats/photo (`imageData`) |
+| DELETE | `/buildings/:id` | super_admin | Removes the building's residents, tickets and waiting list; revokes it from admins (admins managing other buildings are kept) |
 
 ## Admins
 
 | Method | Path | Role | Description |
 |---|---|---|---|
 | GET | `/admins` | super_admin | List all admins |
-| POST | `/admins` | super_admin | Body `{ name, email, phone, password, buildingId }` |
+| POST | `/admins` | super_admin | Body `{ name, email, phone, password, buildingIds: [...] }` (one admin can manage several buildings; a single `buildingId` is also accepted) |
+| PATCH | `/admins/:id` | super_admin | Body `{ buildingIds: [...] }` — change which buildings an admin manages |
 | DELETE | `/admins/:id` | super_admin | |
 
 ## Users / residents

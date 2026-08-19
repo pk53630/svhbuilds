@@ -1,7 +1,7 @@
 const express = require('express');
 const { v4: uuid } = require('uuid');
 const db = require('../db');
-const { authenticate, authorize } = require('../middleware/auth');
+const { authenticate, authorize, adminBuildingIds, hasBuildingAccess } = require('../middleware/auth');
 const { generateTicketNumber } = require('../utils/ticketNumber');
 const { notifyTicketEvent, buildTechnicianWhatsAppLink } = require('../utils/notifications');
 const { technicianPhoneFor } = require('../config/technicians');
@@ -63,7 +63,8 @@ router.get('/', authenticate, (req, res) => {
   if (req.user.role === 'user') {
     scoped = tickets.filter((t) => t.userId === req.user.id);
   } else if (req.user.role === 'admin') {
-    scoped = tickets.filter((t) => t.buildingId === req.user.buildingId);
+    const ids = adminBuildingIds(req.user);
+    scoped = tickets.filter((t) => ids.includes(t.buildingId));
   } else {
     scoped = req.query.buildingId
       ? tickets.filter((t) => t.buildingId === req.query.buildingId)
@@ -87,9 +88,8 @@ router.get('/:id', authenticate, (req, res) => {
   if (!ticket) return res.status(404).json({ error: 'Ticket not found' });
 
   const allowed =
-    req.user.role === 'super_admin' ||
-    (req.user.role === 'admin' && ticket.buildingId === req.user.buildingId) ||
-    (req.user.role === 'user' && ticket.userId === req.user.id);
+    (req.user.role === 'user' && ticket.userId === req.user.id) ||
+    hasBuildingAccess(req.user, ticket.buildingId);
   if (!allowed) return res.status(403).json({ error: 'Not allowed to view this ticket' });
 
   res.json(ticket);
@@ -168,8 +168,8 @@ router.post('/:id/notify-technician', authenticate, authorize('admin', 'super_ad
   const data = db.read();
   const ticket = data.tickets.find((t) => t.id === req.params.id);
   if (!ticket) return res.status(404).json({ error: 'Ticket not found' });
-  if (req.user.role === 'admin' && ticket.buildingId !== req.user.buildingId) {
-    return res.status(403).json({ error: 'You can only manage tickets for your own building' });
+  if (!hasBuildingAccess(req.user, ticket.buildingId)) {
+    return res.status(403).json({ error: 'You can only manage tickets for buildings you manage' });
   }
 
   const building = data.buildings.find((b) => b.id === ticket.buildingId);
@@ -196,8 +196,8 @@ router.patch('/:id/status', authenticate, authorize('admin', 'super_admin'), asy
   const data = db.read();
   const ticket = data.tickets.find((t) => t.id === req.params.id);
   if (!ticket) return res.status(404).json({ error: 'Ticket not found' });
-  if (req.user.role === 'admin' && ticket.buildingId !== req.user.buildingId) {
-    return res.status(403).json({ error: 'You can only manage tickets for your own building' });
+  if (!hasBuildingAccess(req.user, ticket.buildingId)) {
+    return res.status(403).json({ error: 'You can only manage tickets for buildings you manage' });
   }
 
   ticket.status = status;

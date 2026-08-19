@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import { buildingImageUrl } from '../api.js';
 
 export default function BuildingCard({ building, onDelete, canDelete }) {
-  const photo = buildingImageUrl(building.image);
+  // Prefer an uploaded photo (stored inline as a data URL); fall back to a
+  // filename served from the backend's Images folder.
+  const photo = building.imageData || buildingImageUrl(building.image);
   return (
     <div className="building-card">
       {photo && <img className="building-card-photo" src={photo} alt={building.name} />}

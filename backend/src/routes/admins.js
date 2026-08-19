@@ -17,18 +17,29 @@ router.get('/', authenticate, authorize('super_admin'), (req, res) => {
   res.json(users.filter((u) => u.role === 'admin').map(publicUser));
 });
 
-/** Super admin only: create a normal admin for a building. */
+/**
+ * Normalises the buildings a request wants to assign to an admin. Accepts
+ * `buildingIds` (array) or a single `buildingId`, and requires at least one.
+ */
+function resolveBuildingIds(body) {
+  let ids = [];
+  if (Array.isArray(body.buildingIds)) ids = body.buildingIds;
+  else if (body.buildingId) ids = [body.buildingId];
+  return [...new Set(ids.filter(Boolean))];
+}
+
+/** Super admin only: create an admin who can manage one or more buildings. */
 router.post('/', authenticate, authorize('super_admin'), (req, res) => {
-  const { name, email, phone, password, buildingId } = req.body || {};
-  if (!name || !email || !password || !buildingId) {
-    return res.status(400).json({ error: 'name, email, password and buildingId are required' });
+  const { name, email, phone, password } = req.body || {};
+  const buildingIds = resolveBuildingIds(req.body || {});
+  if (!name || !email || !password || buildingIds.length === 0) {
+    return res.status(400).json({ error: 'name, email, password and at least one building are required' });
   }
 
   const data = db.read();
-  if (!data.buildings.some((b) => b.id === buildingId)) {
-    return res.status(400).json({ error: 'Unknown buildingId' });
-  }
-  if (data.users.some((u) => u.email.toLowerCase() === String(email).toLowerCase())) {
+  const unknown = buildingIds.filter((id) => !data.buildings.some((b) => b.id === id));
+  if (unknown.length) return res.status(400).json({ error: 'One or more selected buildings do not exist' });
+  if (data.users.some((u) => (u.email || '').toLowerCase() === String(email).toLowerCase())) {
     return res.status(409).json({ error: 'A user with that email already exists' });
   }
 
@@ -38,7 +49,8 @@ router.post('/', authenticate, authorize('super_admin'), (req, res) => {
     email,
     phone: phone || '',
     role: 'admin',
-    buildingId,
+    buildingIds,
+    buildingId: buildingIds[0], // kept for display / backward compatibility
     flatNumber: null,
     passwordHash: bcrypt.hashSync(password, 10),
     createdAt: new Date().toISOString(),
@@ -46,6 +58,26 @@ router.post('/', authenticate, authorize('super_admin'), (req, res) => {
   data.users.push(admin);
   db.write(data);
   res.status(201).json(publicUser(admin));
+});
+
+/** Super admin only: change which buildings an existing admin can manage. */
+router.patch('/:id', authenticate, authorize('super_admin'), (req, res) => {
+  const buildingIds = resolveBuildingIds(req.body || {});
+  if (buildingIds.length === 0) {
+    return res.status(400).json({ error: 'Select at least one building for this admin' });
+  }
+
+  const data = db.read();
+  const admin = data.users.find((u) => u.id === req.params.id && u.role === 'admin');
+  if (!admin) return res.status(404).json({ error: 'Admin not found' });
+
+  const unknown = buildingIds.filter((id) => !data.buildings.some((b) => b.id === id));
+  if (unknown.length) return res.status(400).json({ error: 'One or more selected buildings do not exist' });
+
+  admin.buildingIds = buildingIds;
+  admin.buildingId = buildingIds[0];
+  db.write(data);
+  res.json(publicUser(admin));
 });
 
 /** Super admin only: remove an admin. */

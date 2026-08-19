@@ -60,6 +60,7 @@ function buildSeedData() {
       email: `admin.${b.code.toLowerCase()}@example.com`,
       phone: '9999900000',
       role: 'admin',
+      buildingIds: [b.id],
       buildingId: b.id,
       flatNumber: null,
       passwordHash: hash('Admin@123'),

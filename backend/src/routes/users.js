@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { v4: uuid } = require('uuid');
 const db = require('../db');
-const { authenticate, authorize } = require('../middleware/auth');
+const { authenticate, authorize, hasBuildingAccess } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -21,8 +21,11 @@ function publicUser(u) {
  */
 router.get('/', authenticate, authorize('admin', 'super_admin'), (req, res) => {
   const { users } = db.read();
-  const buildingId = req.user.role === 'admin' ? req.user.buildingId : req.query.buildingId;
+  const buildingId = req.query.buildingId || (req.user.role === 'admin' ? req.user.buildingId : null);
   if (!buildingId) return res.status(400).json({ error: 'buildingId is required' });
+  if (!hasBuildingAccess(req.user, buildingId)) {
+    return res.status(403).json({ error: 'You do not manage that building' });
+  }
 
   res.json(users.filter((u) => u.role === 'user' && u.buildingId === buildingId).map(publicUser));
 });
@@ -37,10 +40,15 @@ router.get('/', authenticate, authorize('admin', 'super_admin'), (req, res) => {
  */
 router.post('/', authenticate, authorize('admin', 'super_admin'), (req, res) => {
   const { name, email, phone, flatNumber } = req.body || {};
-  const buildingId = req.user.role === 'admin' ? req.user.buildingId : req.body.buildingId;
+  // Admin may manage several buildings, so the target building must be given
+  // explicitly (the frontend always sends it); we then verify access.
+  const buildingId = req.body.buildingId || (req.user.role === 'admin' ? req.user.buildingId : null);
 
   if (!phone || !flatNumber || !buildingId) {
     return res.status(400).json({ error: 'mobile number, flatNumber and buildingId are required' });
+  }
+  if (!hasBuildingAccess(req.user, buildingId)) {
+    return res.status(403).json({ error: 'You do not manage that building' });
   }
 
   const cleanPhone = String(phone).replace(/\s+/g, '');
@@ -90,8 +98,8 @@ router.delete('/:id', authenticate, authorize('admin', 'super_admin'), (req, res
   const data = db.read();
   const target = data.users.find((u) => u.id === req.params.id && u.role === 'user');
   if (!target) return res.status(404).json({ error: 'User not found' });
-  if (req.user.role === 'admin' && target.buildingId !== req.user.buildingId) {
-    return res.status(403).json({ error: 'You can only manage users in your own building' });
+  if (!hasBuildingAccess(req.user, target.buildingId)) {
+    return res.status(403).json({ error: 'You can only manage users in buildings you manage' });
   }
 
   data.users = data.users.filter((u) => u.id !== req.params.id);

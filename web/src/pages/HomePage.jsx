@@ -15,10 +15,14 @@ export default function HomePage() {
       .catch((err) => setError(err.message));
   }, [token]);
 
-  // Super admin sees every building. Admin/user see only the building(s) they belong to.
+  // Super admin sees every building. An admin sees all buildings they manage
+  // (buildingIds); a resident sees just their own.
+  const adminIds = user.buildingIds || (user.buildingId ? [user.buildingId] : []);
   const visible =
     user.role === 'super_admin'
       ? buildings
+      : user.role === 'admin'
+      ? buildings.filter((b) => adminIds.includes(b.id))
       : buildings.filter((b) => b.id === user.buildingId);
 
   return (

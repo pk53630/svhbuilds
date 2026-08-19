@@ -42,6 +42,8 @@ export const api = {
 
   getAdmins: (token) => request('/admins', { token }),
   createAdmin: (token, body) => request('/admins', { method: 'POST', body, token }),
+  updateAdminBuildings: (token, id, buildingIds) =>
+    request(`/admins/${id}`, { method: 'PATCH', body: { buildingIds }, token }),
   deleteAdmin: (token, id) => request(`/admins/${id}`, { method: 'DELETE', token }),
 
   getUsers: (token, buildingId) =>

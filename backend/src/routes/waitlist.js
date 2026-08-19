@@ -1,7 +1,7 @@
 const express = require('express');
 const { v4: uuid } = require('uuid');
 const db = require('../db');
-const { authenticate, authorize } = require('../middleware/auth');
+const { authenticate, authorize, hasBuildingAccess } = require('../middleware/auth');
 const { logNotification } = require('../utils/notifications');
 
 const router = express.Router();
@@ -18,15 +18,22 @@ function readWaitlist(data) {
   return data.waitlist;
 }
 
-/** Which building this request is scoped to (admin = own; super admin must pass ?buildingId=). */
+/**
+ * Which building this request is scoped to. The frontend always sends a
+ * buildingId (admins can manage several); we fall back to an admin's first
+ * building for safety, then verify access in each handler.
+ */
 function scopedBuildingId(req) {
-  return req.user.role === 'admin' ? req.user.buildingId : req.query.buildingId || req.body.buildingId;
+  return req.query.buildingId || req.body.buildingId || (req.user.role === 'admin' ? req.user.buildingId : null);
 }
 
 /** GET /api/waitlist?buildingId= — list interested candidates for a building. */
 router.get('/', authenticate, authorize('admin', 'super_admin'), (req, res) => {
   const buildingId = scopedBuildingId(req);
   if (!buildingId) return res.status(400).json({ error: 'buildingId is required' });
+  if (!hasBuildingAccess(req.user, buildingId)) {
+    return res.status(403).json({ error: 'You do not manage that building' });
+  }
 
   const data = db.read();
   const list = readWaitlist(data)
@@ -40,6 +47,9 @@ router.post('/', authenticate, authorize('admin', 'super_admin'), (req, res) => 
   const { name, phone, note } = req.body || {};
   const buildingId = scopedBuildingId(req);
   if (!buildingId) return res.status(400).json({ error: 'buildingId is required' });
+  if (!hasBuildingAccess(req.user, buildingId)) {
+    return res.status(403).json({ error: 'You do not manage that building' });
+  }
   if (!name || !phone) return res.status(400).json({ error: 'name and mobile number are required' });
 
   const cleanPhone = String(phone).replace(/\s+/g, '');
@@ -75,8 +85,8 @@ router.delete('/:id', authenticate, authorize('admin', 'super_admin'), (req, res
   const list = readWaitlist(data);
   const entry = list.find((w) => w.id === req.params.id);
   if (!entry) return res.status(404).json({ error: 'Waiting list entry not found' });
-  if (req.user.role === 'admin' && entry.buildingId !== req.user.buildingId) {
-    return res.status(403).json({ error: 'You can only manage your own building waiting list' });
+  if (!hasBuildingAccess(req.user, entry.buildingId)) {
+    return res.status(403).json({ error: 'You can only manage waiting lists for buildings you manage' });
   }
 
   data.waitlist = list.filter((w) => w.id !== req.params.id);
@@ -95,6 +105,9 @@ router.post('/notify', authenticate, authorize('admin', 'super_admin'), (req, re
   const { flatNumber, message } = req.body || {};
   const buildingId = scopedBuildingId(req);
   if (!buildingId) return res.status(400).json({ error: 'buildingId is required' });
+  if (!hasBuildingAccess(req.user, buildingId)) {
+    return res.status(403).json({ error: 'You do not manage that building' });
+  }
 
   const data = db.read();
   const building = data.buildings.find((b) => b.id === buildingId);
