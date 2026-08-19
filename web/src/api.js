@@ -58,4 +58,9 @@ export const api = {
   updateTicketStatus: (token, id, body) =>
     request(`/tickets/${id}/status`, { method: 'PATCH', body, token }),
   notifyTechnician: (token, id) => request(`/tickets/${id}/notify-technician`, { method: 'POST', token }),
+
+  getWaitlist: (token, buildingId) => request(`/waitlist?buildingId=${buildingId}`, { token }),
+  addWaitlist: (token, body) => request('/waitlist', { method: 'POST', body, token }),
+  deleteWaitlist: (token, id) => request(`/waitlist/${id}`, { method: 'DELETE', token }),
+  notifyWaitlist: (token, body) => request('/waitlist/notify', { method: 'POST', body, token }),
 };

@@ -101,7 +101,7 @@ function buildSeedData() {
     }
   });
 
-  return { users, buildings, tickets };
+  return { users, buildings, tickets, waitlist: [] };
 }
 
 module.exports = { buildSeedData };

@@ -46,6 +46,12 @@ export default function BuildingDetailPage() {
             <p className="muted">Add or remove residents for this building.</p>
           </Link>
         )}
+        {(isAdminHere || isSuperAdmin) && (
+          <Link className="action-card" to={`/buildings/${building.id}/waitlist`}>
+            <h3>⏳ Waiting list</h3>
+            <p className="muted">Interested candidates; notify them when a flat vacates.</p>
+          </Link>
+        )}
       </div>
     </div>
   );

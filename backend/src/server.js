@@ -7,6 +7,7 @@ const buildingRoutes = require('./routes/buildings');
 const adminRoutes = require('./routes/admins');
 const userRoutes = require('./routes/users');
 const ticketRoutes = require('./routes/tickets');
+const waitlistRoutes = require('./routes/waitlist');
 
 const path = require('path');
 
@@ -27,6 +28,7 @@ app.use('/api/buildings', buildingRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tickets', ticketRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 
 // Central error handler as a safety net.
 app.use((err, req, res, next) => {

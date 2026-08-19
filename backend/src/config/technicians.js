@@ -16,6 +16,7 @@ const TECHNICIANS_BY_CATEGORY = {
   'Backup Power Issue': '918105870377',
   Cleaning: '918105870377',
   'Access Not Working': '918105870377',
+  'Washing Machine': '918105870377',
   Others: '918105870377',
 };
 

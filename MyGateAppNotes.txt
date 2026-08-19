@@ -192,3 +192,28 @@ and redeploys.
 - The same code runs on AWS (the earlier guide) — set the same three environment variables.
 - Or simply pay Render $7/month for the always-on instance and keep everything else identical.
 - The Android/iOS apps just need this same API URL when you're ready for the store phase.
+
+
+
+git add .
+git commit -m "Remove demo credentials from login screens"
+git push
+
+https://svhbuilds.netlify.app/login
+
+Super admin
+ks2.praveen@gmail.com (Its me :-) )
+Admin@123
+
+Buildng admin
+9767125501
+Chase1234@
+
+Building user
+9000000001
+User@123
+
+There are couple of features need to be add
+1. In issue type need to add one more list in drop down, the one more option in drop down is "Washing machine"
+2. The new feature needs to add for building admin, the building admin can add requested persons that are very much interested but flats are not available in such case the building admin will maintain waiting list / requested list. Once the flat will vaccant the building admin will send the wahts app notification to all interested candidates, at the same time building admin can add / delete interested candidates
+3. The super admin can add / delete building names and flat number

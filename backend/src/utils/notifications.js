@@ -75,4 +75,4 @@ function buildTechnicianWhatsAppLink(phone, ticket, building) {
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
 
-module.exports = { sendWhatsApp, sendEmail, notifyTicketEvent, buildTechnicianWhatsAppLink };
+module.exports = { sendWhatsApp, sendEmail, notifyTicketEvent, buildTechnicianWhatsAppLink, logNotification };

@@ -19,7 +19,7 @@ const path = require('path');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
-const EMPTY = { users: [], buildings: [], tickets: [] };
+const EMPTY = { users: [], buildings: [], tickets: [], waitlist: [] };
 
 const usePostgres = !!process.env.DATABASE_URL;
 let pool = null;

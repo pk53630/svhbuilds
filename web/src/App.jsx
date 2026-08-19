@@ -8,6 +8,7 @@ import RaiseRequestPage from './pages/RaiseRequestPage.jsx';
 import TicketListPage from './pages/TicketListPage.jsx';
 import SuperAdminPage from './pages/SuperAdminPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
+import WaitlistPage from './pages/WaitlistPage.jsx';
 import ChangePasswordPage from './pages/ChangePasswordPage.jsx';
 
 function Protected({ children }) {
@@ -64,6 +65,14 @@ export default function App() {
             element={
               <Protected>
                 <AdminUsersPage />
+              </Protected>
+            }
+          />
+          <Route
+            path="/buildings/:buildingId/waitlist"
+            element={
+              <Protected>
+                <WaitlistPage />
               </Protected>
             }
           />

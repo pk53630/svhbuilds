@@ -43,7 +43,7 @@ TECH PRO (TP, TechPro.jpg), SRI SIRI RESIDENCY (SSR, SriSiri.jpg), Urban Stays (
 | buildingId      | string |                                                                 |
 | userId          | string | resident who raised it                                         |
 | flatNumber      | string | copied from the resident at creation time                      |
-| category        | enum   | Plumbing, Carpentry, Electricity, Water Issue, Internet Not Working, Lift Not Working, Backup Power Issue, Cleaning, Access Not Working, Others |
+| category        | enum   | Plumbing, Carpentry, Electricity, Water Issue, Internet Not Working, Lift Not Working, Backup Power Issue, Cleaning, Access Not Working, Washing Machine, Others |
 | description     | string | **optional**, max 50 words if provided (enforced server-side)  |
 | images          | array  | **optional**, up to 3 photos (JPEG/PNG/WebP, ≤5 MB each); stored in `backend/data/uploads/`, served at `/uploads/<file>` |
 | status          | enum   | `open` → `in_progress` → `closed`                              |

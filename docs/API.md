@@ -54,6 +54,18 @@ Returns: `{ success, user }` with `mustChangePassword` cleared.
 Every ticket create/status-change triggers WhatsApp + email notifications (currently logged to
 `backend/data/notifications.log`; see the deployment guide to enable real sending).
 
+## Waiting list (interested candidates)
+
+Building admins maintain a list of people who want a flat when none is available; when a flat
+vacates they broadcast a WhatsApp message to all of them.
+
+| Method | Path | Role | Description |
+|---|---|---|---|
+| GET | `/waitlist?buildingId=` | admin, super_admin | List candidates for a building (admin auto-scoped to their own) |
+| POST | `/waitlist` | admin, super_admin | Body `{ name, phone, note?, buildingId? }` |
+| DELETE | `/waitlist/:id` | admin, super_admin | Remove a candidate |
+| POST | `/waitlist/notify` | admin, super_admin | Body `{ buildingId?, flatNumber?, message? }`. Returns `{ count, message, recipients:[{ name, phone, whatsappUrl }] }`; the frontend opens each `whatsappUrl` (pre-filled `wa.me` link) so the admin sends from their own WhatsApp. |
+
 ## Errors
 
 Non-2xx responses return `{ "error": "human readable message" }`.

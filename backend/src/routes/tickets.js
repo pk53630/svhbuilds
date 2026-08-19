@@ -18,6 +18,7 @@ const CATEGORIES = [
   'Backup Power Issue',
   'Cleaning',
   'Access Not Working',
+  'Washing Machine',
   'Others',
 ];
 

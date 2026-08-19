@@ -6,7 +6,7 @@ export default function SuperAdminPage() {
   const { token } = useAuth();
   const [buildings, setBuildings] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [buildingForm, setBuildingForm] = useState({ name: '', code: '', address: '', image: '' });
+  const [buildingForm, setBuildingForm] = useState({ name: '', code: '', address: '', image: '', flats: '' });
   const [adminForm, setAdminForm] = useState({ name: '', email: '', phone: '', password: '', buildingId: '' });
   const [error, setError] = useState('');
 
@@ -20,8 +20,13 @@ export default function SuperAdminPage() {
     e.preventDefault();
     setError('');
     try {
-      await api.createBuilding(token, buildingForm);
-      setBuildingForm({ name: '', code: '', address: '', image: '' });
+      // Flats entered as a comma/space/newline separated list -> array.
+      const flats = buildingForm.flats
+        .split(/[\s,]+/)
+        .map((f) => f.trim())
+        .filter(Boolean);
+      await api.createBuilding(token, { ...buildingForm, flats });
+      setBuildingForm({ name: '', code: '', address: '', image: '', flats: '' });
       load();
     } catch (err) {
       setError(err.message);
@@ -74,18 +79,25 @@ export default function SuperAdminPage() {
           </div>
           <input placeholder="Address" value={buildingForm.address} onChange={(e) => setBuildingForm({ ...buildingForm, address: e.target.value })} />
           <input placeholder="Photo filename in Images folder (optional, e.g. MyBuilding.jpg)" value={buildingForm.image} onChange={(e) => setBuildingForm({ ...buildingForm, image: e.target.value })} />
+          <textarea
+            placeholder="Flat numbers, separated by commas or spaces (e.g. 101,102,103,201,202,P-1,G-1)"
+            value={buildingForm.flats}
+            onChange={(e) => setBuildingForm({ ...buildingForm, flats: e.target.value })}
+            rows={3}
+          />
           <button className="btn btn-primary" type="submit">Add building</button>
         </form>
 
         <table className="data-table">
           <thead>
-            <tr><th>Name</th><th>Code</th><th>Address</th><th></th></tr>
+            <tr><th>Name</th><th>Code</th><th>Flats</th><th>Address</th><th></th></tr>
           </thead>
           <tbody>
             {buildings.map((b) => (
               <tr key={b.id}>
                 <td>{b.name}</td>
                 <td>{b.code}</td>
+                <td>{(b.flats || []).length}</td>
                 <td>{b.address}</td>
                 <td><button className="btn btn-danger btn-sm" onClick={() => handleDeleteBuilding(b)}>Delete</button></td>
               </tr>
