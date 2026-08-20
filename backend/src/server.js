@@ -2,6 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+// Safety net: log unexpected errors instead of letting them crash the whole
+// server (the Postgres pool has its own handler for the common case — see
+// db.js — this covers anything else).
+process.on('unhandledRejection', (err) => {
+  console.error('[server] Unhandled promise rejection:', err);
+});
+process.on('uncaughtException', (err) => {
+  console.error('[server] Uncaught exception:', err);
+});
+
 const authRoutes = require('./routes/auth');
 const buildingRoutes = require('./routes/buildings');
 const adminRoutes = require('./routes/admins');

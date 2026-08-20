@@ -55,6 +55,15 @@ async function init() {
       connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false }, // Neon/Supabase require SSL
     });
+    // IMPORTANT: free databases like Neon suspend their compute after a few
+    // idle minutes and drop open connections. When that happens, pg's Pool
+    // emits an 'error' event on an idle client — with no listener, Node
+    // treats that as an uncaught exception and crashes the whole server.
+    // This handler just logs it; the pool transparently opens a fresh
+    // connection on the next query.
+    pool.on('error', (err) => {
+      console.error('[db] Postgres pool idle-connection error (recovered):', err.message);
+    });
     await pool.query(
       'CREATE TABLE IF NOT EXISTS app_state (id INT PRIMARY KEY, data JSONB NOT NULL)'
     );
