@@ -1,33 +1,36 @@
 /**
- * Small dependency-free bar chart. data: [{ label, value }, ...]
- * Kept as plain SVG so it never breaks the build on free hosting.
+ * Small dependency-free bar chart, built from plain HTML/CSS (not SVG) so
+ * text never gets stretched or distorted when the card resizes.
+ * data: [{ label, value }, ...]
  */
-export default function BarChart({ data, height = 200, color = '#2563eb', valueSuffix = '' }) {
+const DEFAULT_PALETTE = ['#2563eb', '#f97316', '#16a34a', '#e11d48', '#7c3aed', '#0891b2', '#ca8a04'];
+
+export default function BarChart({ data, height = 200, colors, valueSuffix = '' }) {
+  const palette = colors || DEFAULT_PALETTE;
   const max = Math.max(1, ...data.map((d) => d.value));
-  const barWidth = 100 / data.length;
 
   return (
     <div className="bar-chart">
-      <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="bar-chart-svg">
+      <div className="bar-chart-bars" style={{ height }}>
         {data.map((d, i) => {
-          const barHeight = (d.value / max) * (height - 30);
-          const x = i * barWidth + barWidth * 0.15;
-          const w = barWidth * 0.7;
-          const y = height - 20 - barHeight;
+          const color = palette[i % palette.length];
+          const barHeightPct = Math.max((d.value / max) * 100, d.value > 0 ? 4 : 1);
           return (
-            <g key={d.label}>
-              <rect x={x} y={y} width={w} height={barHeight} fill={color} rx="1" />
-              <text x={x + w / 2} y={y - 3} textAnchor="middle" fontSize="5" fill="#334155">
+            <div className="bar-chart-col" key={d.label}>
+              <span className="bar-chart-value" style={{ color }}>
                 {d.value}
                 {valueSuffix}
-              </text>
-            </g>
+              </span>
+              <div className="bar-chart-bar" style={{ height: `${barHeightPct}%`, background: color }} />
+            </div>
           );
         })}
-      </svg>
+      </div>
       <div className="bar-chart-labels">
-        {data.map((d) => (
-          <span key={d.label}>{d.label}</span>
+        {data.map((d, i) => (
+          <span key={d.label} style={{ color: palette[i % palette.length] }}>
+            {d.label}
+          </span>
         ))}
       </div>
     </div>
