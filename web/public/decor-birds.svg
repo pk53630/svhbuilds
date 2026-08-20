@@ -1,0 +1,8 @@
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1d4ed8" stroke-opacity="0.35" stroke-width="4" stroke-linecap="round">
+  <path d="M20 40 Q30 25 40 40 Q50 25 60 40"/>
+  <path d="M90 70 Q100 55 110 70 Q120 55 130 70"/>
+  <path d="M150 30 Q158 18 166 30 Q174 18 182 30"/>
+  <path d="M250 90 Q260 75 270 90 Q280 75 290 90"/>
+  <path d="M320 50 Q328 38 336 50 Q344 38 352 50"/>
+  <path d="M210 130 Q218 118 226 130 Q234 118 242 130"/>
+</svg>
