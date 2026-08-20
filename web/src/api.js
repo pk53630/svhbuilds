@@ -65,4 +65,27 @@ export const api = {
   addWaitlist: (token, body) => request('/waitlist', { method: 'POST', body, token }),
   deleteWaitlist: (token, id) => request(`/waitlist/${id}`, { method: 'DELETE', token }),
   notifyWaitlist: (token, body) => request('/waitlist/notify', { method: 'POST', body, token }),
+
+  getFloorSeries: (token) => request('/lpg/floor-series', { token }),
+  getLpgRecords: (token, buildingId) => request(`/lpg?buildingId=${buildingId}`, { token }),
+  getLpgReport: (token, buildingId) => request(`/lpg/report?buildingId=${buildingId}`, { token }),
+  addLpgRecord: (token, body) => request('/lpg', { method: 'POST', body, token }),
+  deleteLpgRecord: (token, id) => request(`/lpg/${id}`, { method: 'DELETE', token }),
+
+  getDieselRecords: (token, buildingId) => request(`/diesel?buildingId=${buildingId}`, { token }),
+  getDieselReport: (token, buildingId) => request(`/diesel/report?buildingId=${buildingId}`, { token }),
+  addDieselRecord: (token, body) => request('/diesel', { method: 'POST', body, token }),
+  deleteDieselRecord: (token, id) => request(`/diesel/${id}`, { method: 'DELETE', token }),
+
+  getMaintenanceRecords: (token, buildingId, type) =>
+    request(`/maintenance?buildingId=${buildingId}&type=${type}`, { token }),
+  addMaintenanceRecord: (token, body) => request('/maintenance', { method: 'POST', body, token }),
+  deleteMaintenanceRecord: (token, id) => request(`/maintenance/${id}`, { method: 'DELETE', token }),
+
+  getRentChecklist: (token, buildingId, month) =>
+    request(`/rent?buildingId=${buildingId}${month ? `&month=${month}` : ''}`, { token }),
+  toggleRent: (token, body) => request('/rent/toggle', { method: 'PATCH', body, token }),
+  getRentReport: (token, buildingId) => request(`/rent/report?buildingId=${buildingId}`, { token }),
+
+  runDueChecks: (token) => request('/cron/run-checks', { method: 'POST', token }),
 };

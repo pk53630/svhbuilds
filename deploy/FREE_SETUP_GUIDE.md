@@ -16,6 +16,16 @@ One honest limitation of the free tier: Render puts the backend to sleep after ~
 no traffic, and the first visit after that takes ~50 seconds to wake up. Fine for demos — just
 open the site once yourself before presenting so it's already awake.
 
+This also affects the automatic reminders (generator/lift maintenance due in 3 days, rent not
+received after the 5th) — they only fire while the server happens to be awake. If you want those
+to reliably fire once a day, add a free keep-alive ping:
+
+1. Sign up at https://cron-job.org (free, no card).
+2. Create a job that does an HTTP GET to `https://svhbuilds-api.onrender.com/api/health` every
+   10 minutes. This keeps Render from sleeping, so the backend's own hourly check keeps running.
+3. Optional but not required: admins can also press **"Check due dates now"** on any building
+   page in the app to run the checks immediately.
+
 ---
 
 ## Step 0 — Push the project to GitHub (one time)

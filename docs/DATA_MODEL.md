@@ -66,6 +66,34 @@ TECH PRO (TP, TechPro.jpg), SRI SIRI RESIDENCY (SSR, SriSiri.jpg), Urban Stays (
   admin's browser opens WhatsApp with the message ready to send. This needs no WhatsApp Business
   API credentials — it works today.
 
+## LpgRecord / DieselRecord
+
+| field | type | notes |
+|---|---|---|
+| buildingId | string | |
+| floorSeries (LPG only) | enum | `"1".."6"` |
+| liters (Diesel only) | number | |
+| date | string | ISO date; may be in the past |
+| amount | number\|null | optional |
+
+## MaintenanceRecord (generator/lift)
+
+| field | type | notes |
+|---|---|---|
+| buildingId | string | |
+| type | enum | `generator` \| `lift` |
+| lastServiceDate / nextServiceDate | string | ISO dates |
+| notifiedAt | string\|null | set once the 3-days-before reminder has fired for this record |
+
+## RentRecord
+
+| field | type | notes |
+|---|---|---|
+| buildingId, flatNumber, month (`YYYY-MM`) | string | one record per flat per month |
+| received | bool | |
+| receivedAt | string\|null | |
+| notifiedAt | string\|null | set once the late-payment reminder has fired for that month |
+
 ### Technician phone numbers (`backend/src/config/technicians.js`)
 
 | Category | Phone |

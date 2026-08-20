@@ -68,6 +68,54 @@ vacates they broadcast a WhatsApp message to all of them.
 | DELETE | `/waitlist/:id` | admin, super_admin | Remove a candidate |
 | POST | `/waitlist/notify` | admin, super_admin | Body `{ buildingId?, flatNumber?, message? }`. Returns `{ count, message, recipients:[{ name, phone, whatsappUrl }] }`; the frontend opens each `whatsappUrl` (pre-filled `wa.me` link) so the admin sends from their own WhatsApp. |
 
+## LPG filling
+
+| Method | Path | Role | Description |
+|---|---|---|---|
+| GET | `/lpg/floor-series` | any | Fixed dropdown options `["1".."6"]` |
+| GET | `/lpg?buildingId=` | admin, super_admin | List records, newest first |
+| GET | `/lpg/report?buildingId=` | admin, super_admin | `[{ label: "2024", value: 3 }, ...]` — fillings per year, last 3 years |
+| POST | `/lpg` | admin, super_admin | Body `{ buildingId?, floorSeries, date, amount? }` — `date` may be in the past |
+| DELETE | `/lpg/:id` | admin, super_admin | |
+
+## Diesel filling (generator)
+
+| Method | Path | Role | Description |
+|---|---|---|---|
+| GET | `/diesel?buildingId=` | admin, super_admin | List records, newest first |
+| GET | `/diesel/report?buildingId=` | admin, super_admin | Fillings per year, last 3 years |
+| POST | `/diesel` | admin, super_admin | Body `{ buildingId?, liters, date, amount? }` |
+| DELETE | `/diesel/:id` | admin, super_admin | |
+
+## Generator / lift maintenance
+
+| Method | Path | Role | Description |
+|---|---|---|---|
+| GET | `/maintenance?buildingId=&type=generator\|lift` | admin, super_admin | Service history, newest first |
+| POST | `/maintenance` | admin, super_admin | Body `{ buildingId?, type, lastServiceDate, nextServiceDate, notes? }` |
+| DELETE | `/maintenance/:id` | admin, super_admin | |
+
+The most recent record per building/type is watched for its due date; 3 days before (and on the
+day itself) admins and the super admin get one WhatsApp + email reminder.
+
+## Rent tracking
+
+| Method | Path | Role | Description |
+|---|---|---|---|
+| GET | `/rent?buildingId=&month=YYYY-MM` | admin, super_admin | Every resident with received/not for that month (defaults to current month) |
+| PATCH | `/rent/toggle` | admin, super_admin | Body `{ buildingId?, flatNumber, month, received }` |
+| GET | `/rent/report?buildingId=` | admin, super_admin | `[{ label: "Jun 2026", value: 2 }, ...]` — residents not yet marked received, last 4 months |
+
+After the 5th of the month, any resident not yet marked received gets one WhatsApp + email
+reminder (also sent to the building's admins); tracked so it's only sent once per flat per month.
+
+## Due-date checks (cron)
+
+`POST /api/cron/run-checks` (admin, super_admin) — runs the maintenance and rent reminder checks
+immediately and returns `{ maintenanceReminders, rentReminders }` (counts sent). Also runs
+automatically once an hour while the server is awake. On free hosting the server sleeps when
+idle — see `deploy/FREE_SETUP_GUIDE.md` for a free external pinger to keep it awake.
+
 ## Errors
 
 Non-2xx responses return `{ "error": "human readable message" }`.

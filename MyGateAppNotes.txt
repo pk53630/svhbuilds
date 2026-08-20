@@ -216,4 +216,28 @@ User@123
 There are couple of features need to be add
 1. In issue type need to add one more list in drop down, the one more option in drop down is "Washing machine"
 2. The new feature needs to add for building admin, the building admin can add requested persons that are very much interested but flats are not available in such case the building admin will maintain waiting list / requested list. Once the flat will vaccant the building admin will send the wahts app notification to all interested candidates, at the same time building admin can add / delete interested candidates
-3. The super admin can add / delete building names and flat number
+3. The super admin can add / delete building names with flat number, and need to replica of all features that are present for other buildings
+
+
+git add . && git commit -m "Building photo upload + multi-building admins" && git push
+
+
+Chaithanya Homes
+
+
+There are couple of issues found
+1. The super not able to upload photo of newly added building
+2. There can be scenario that one building admin can have multiple building admins example Name:SVR, email:pk53630@yahoo.com can be admin for SV RESIDENCY, TECH PRO, LAASYA HOMES like depends on super admin provide access to building admin
+
+We are looking more features needs to add below are features need to be add every building
+1. LPG filling information: The building admin will enter a record that when LPG cylinder was purchased, the building admin has to select floor series like 1,2,3,4,5,6 from drop down and select calender date, it can be past dates also because LPG delivery happen at building, building admin may enter after couple of days and enter the LPG amount (amount is optional)
+   1.1 The report should generate for "LPG filling information", the report is bar chart or line chart x-axis is last 3 years (2026,2027,2028,..) and y-axis is number of times LPG filled in particular year
+2. Diesel filling information: The building admin will enter a record that when Diesel was filled in power back generator, the building admin enter the number of liters and amount (amount is optional) purchased and select calender date, it can be past dates also because Diesel delivery happen at building, building admin may enter after couple of days.
+   2.1 The report should generate for "Diesel filling information", the report is bar chart or line chart x-axis is last 3 years (2026,2027,2028,..) and y-axis is number of times Diesel is filled in particular year
+3. Generator maintenance due date: The building admin will enter a record that on which date Generator maintenance has happen and when is the next Generator maintenance date, so that building admin will get notification before 3 days of next Generator maintenance date
+4. Lift maintenance due date: The building admin will enter a record that on which date Lift maintenance has happen and when is the next Lift maintenance date, so that building admin will get notification before 3 days of next Lift maintenance date
+5. Rent credited due date: The building admin will enter a check mark for their buildings flats if rent recevied from the user for current month or not, if not checked means rent has not recevied every month between 1st day to 5th end of day, for the current month then trigger message saying current month has not recevied through gmail and whats's app mobile number
+   5.1 The report should generate for the number of users that delayed for every month, x-axis last 4 months and y-axis is number of users that delayed of that month
+
+
+

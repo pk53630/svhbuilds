@@ -19,11 +19,28 @@ const path = require('path');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
-const EMPTY = { users: [], buildings: [], tickets: [], waitlist: [] };
+const EMPTY = {
+  users: [],
+  buildings: [],
+  tickets: [],
+  waitlist: [],
+  lpgRecords: [],
+  dieselRecords: [],
+  maintenanceRecords: [],
+  rentRecords: [],
+};
 
 const usePostgres = !!process.env.DATABASE_URL;
 let pool = null;
 let cache = null;
+
+/** Backfills any collections added in later versions (e.g. existing cloud data predating a feature). */
+function normalize(data) {
+  Object.keys(EMPTY).forEach((key) => {
+    if (!Array.isArray(data[key])) data[key] = [];
+  });
+  return data;
+}
 
 function ensureFile() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -43,7 +60,7 @@ async function init() {
     );
     const result = await pool.query('SELECT data FROM app_state WHERE id = 1');
     if (result.rows.length > 0) {
-      cache = result.rows[0].data;
+      cache = normalize(result.rows[0].data);
     } else {
       cache = JSON.parse(JSON.stringify(EMPTY));
       await pool.query('INSERT INTO app_state (id, data) VALUES (1, $1)', [cache]);
@@ -51,7 +68,7 @@ async function init() {
     console.log('[db] Using Postgres (DATABASE_URL is set)');
   } else {
     ensureFile();
-    cache = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    cache = normalize(JSON.parse(fs.readFileSync(DB_FILE, 'utf-8')));
     console.log('[db] Using local file storage (backend/data/db.json)');
   }
 }
@@ -62,7 +79,7 @@ function read() {
     throw new Error('db.init() must be awaited before use when DATABASE_URL is set');
   }
   ensureFile();
-  cache = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+  cache = normalize(JSON.parse(fs.readFileSync(DB_FILE, 'utf-8')));
   return cache;
 }
 

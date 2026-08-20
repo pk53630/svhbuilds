@@ -75,4 +75,32 @@ function buildTechnicianWhatsAppLink(phone, ticket, building) {
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
 
-module.exports = { sendWhatsApp, sendEmail, notifyTicketEvent, buildTechnicianWhatsAppLink, logNotification };
+/** Generic (non-ticket) WhatsApp/email senders, used by maintenance and rent reminders. */
+async function sendWhatsAppMessage(toPhone, message) {
+  logNotification(`WHATSAPP -> ${toPhone || '(no phone on file)'}: ${message.replace(/\n/g, ' | ')}`);
+}
+
+async function sendEmailMessage(toEmail, subject, message) {
+  logNotification(`EMAIL -> ${toEmail || '(no email on file)'} | Subject: ${subject}: ${message.replace(/\n/g, ' | ')}`);
+}
+
+/** Sends the same message to every user in the list, on both channels. */
+async function notifyUsers(users, subject, message) {
+  await Promise.all(
+    (users || []).filter(Boolean).map(async (user) => {
+      await sendWhatsAppMessage(user.phone, message);
+      await sendEmailMessage(user.email, subject, message);
+    })
+  );
+}
+
+module.exports = {
+  sendWhatsApp,
+  sendEmail,
+  notifyTicketEvent,
+  buildTechnicianWhatsAppLink,
+  logNotification,
+  sendWhatsAppMessage,
+  sendEmailMessage,
+  notifyUsers,
+};

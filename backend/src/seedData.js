@@ -102,7 +102,16 @@ function buildSeedData() {
     }
   });
 
-  return { users, buildings, tickets, waitlist: [] };
+  return {
+    users,
+    buildings,
+    tickets,
+    waitlist: [],
+    lpgRecords: [],
+    dieselRecords: [],
+    maintenanceRecords: [],
+    rentRecords: [],
+  };
 }
 
 module.exports = { buildSeedData };
